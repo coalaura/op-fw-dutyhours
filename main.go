@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-colorable"
 	"gitlab.com/milan44/logger-v2"
-	"runtime"
 )
 
 var (
@@ -51,9 +50,5 @@ func main() {
 
 	log.Info("Server started!")
 
-	if runtime.GOOS == "windows" {
-		log.MustPanic(r.Run(":7000"))
-	} else {
-		log.MustPanic(r.RunTLS(":7000", "/var/www/ssl/cert.pem", "/var/www/ssl/key.pem"))
-	}
+	log.MustPanic(r.Run(":7000"))
 }
