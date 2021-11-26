@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Roboto", "Noto Sans", "Droid Sans", sans-serif;
+    font-size: 15px;
+    color: #242729;
+    margin: 0;
+    line-height: 22.5px;
+    min-height: 100vh;
+    background: #f2f2f2;
+}
+
+body {
+    padding-bottom: 43px;
+}
+
+#page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 36px;
+    margin: 0 0 20px;
+}
+
+sup {
+    font-size: 15px;
+    position: relative;
+    top: -5px;
+}
+
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
+    transition: 250ms;
+}
+
+tr:not(:last-child) {
+    border-bottom: 1px solid #dfdfdf;
+}
+
+th:not(:last-child),
+td:not(:last-child) {
+    border-right: 1px solid #dfdfdf;
+}
+
+th, td {
+    padding: 5px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+th:not(:first-child) {
+    font-size: 13px;
+}
+
+td:first-child {
+    text-align: justify;
+}
+
+tr.active {
+    background: #c5ffc5;
+}
+
+tr.semi {
+    background: #ffeba4;
+}
+
+tr.inactive {
+    background: #ffc5c5;
+}
+
+tr.invalid {
+    background: #560000;
+    color: #fff;
+}
+
+tr:hover {
+    background: #dfdfdf;
+    color: #242729;
+}
