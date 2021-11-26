@@ -14,7 +14,7 @@
             if (data.result.length > 0) {
                 let html = buildHeader();
 
-                data.result.sort(cmp)
+                data.result = data.result.sort(cmp)
 
                 $.each(data.result, function (_, person) {
                     const info = person.firstName + ' ' + person.lastName + ' (#' + person.id + ')';
@@ -117,15 +117,15 @@
                     sumB = sum(b.onDutyTime);
 
                 if (sumA === sumB) {
-                    return a.firstName.localeCompare(b.firstName);
+                    return a.firstName.localeCompare(b.firstName) ? 1 : -1;
                 }
 
-                return sumA < sumB;
+                return sumA < sumB ? 1 : -1;
             }
 
-            return lastA < lastB;
+            return lastA < lastB ? 1 : -1;
         }
 
-        return thisA < thisB;
+        return thisA < thisB ? 1 : -1;
     }
 })()
