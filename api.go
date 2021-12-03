@@ -12,6 +12,10 @@ func api(c *gin.Context) {
 
 	data, err := getOPFWData(server)
 	if err != nil || data.StatusCode != 200 {
+		if err != nil {
+			log.WarningE(err)
+		}
+
 		c.AbortWithStatusJSON(500, map[string]interface{}{
 			"status":  false,
 			"message": "Failed to get data",

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 type DutyTimeResponse struct {
@@ -31,7 +32,9 @@ func getOPFWData(server string) (*DutyTimeResponse, error) {
 		return nil, errors.New("missing base or token")
 	}
 
-	c := &http.Client{}
+	c := &http.Client{
+		Timeout: 10 * time.Second,
+	}
 
 	req, _ := http.NewRequest("GET", url+"/op-framework/dutyTime.json", nil)
 
