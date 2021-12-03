@@ -19,10 +19,10 @@ type DutyTimeResponse struct {
 }
 
 type DutyHourEntry struct {
-	Id        int64            `json:"id"`
-	FirstName string           `json:"firstName"`
-	LastName  string           `json:"lastName"`
-	DutyTime  map[string]int64 `json:"onDutyTime"`
+	Id        int64       `json:"id"`
+	FirstName string      `json:"firstName"`
+	LastName  string      `json:"lastName"`
+	DutyTime  interface{} `json:"onDutyTime"`
 }
 
 func getOPFWData(server string) (*DutyTimeResponse, error) {
