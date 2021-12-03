@@ -11,10 +11,11 @@ import (
 
 type DutyTimeResponse struct {
 	StatusCode int64 `json:"statusCode"`
-	Data       struct {
+	Data       *struct {
 		Police  []DutyHourEntry `json:"Law Enforcement"`
 		Medical []DutyHourEntry `json:"Medical"`
 	} `json:"data"`
+	Message *string `json:"message,omitempty"`
 }
 
 type DutyHourEntry struct {

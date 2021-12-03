@@ -14,6 +14,8 @@ func api(c *gin.Context) {
 	if err != nil || data.StatusCode != 200 {
 		if err != nil {
 			log.WarningE(err)
+		} else if data.Message != nil {
+			log.Warning(*data.Message)
 		}
 
 		c.AbortWithStatusJSON(500, map[string]interface{}{
