@@ -6,31 +6,30 @@
     $('#type').text(type);
 
     const table = $('#hours'),
-        current = currentWeek(),
-        validAfter = 1636934399; // Sun Nov 14 2021 23:59:59 GMT+0000
+        weekZero = 1609113600,
+        current = currentWeek();
 
     $.get('/duty/' + server + '/' + type + '/api', function (data) {
         if (data.status) {
             if (data.result.length > 0) {
                 let html = buildHeader();
 
-                data.result = data.result.sort(cmp)
+                data.result = data.result.sort(cmp);
 
                 $.each(data.result, function (_, person) {
                     const info = person.firstName + ' ' + person.lastName + ' (#' + person.id + ')';
                     const thisWeek = person.onDutyTime[current + ''];
+                    const sumWeek = sum(person.onDutyTime);
 
-                    const cls = thisWeek === 0 ? (sum(person.onDutyTime) === 0 ? 'invalid' : 'inactive') : (thisWeek >= (4 * 60 * 60) ? 'active' : 'semi');
-
-                    let p = '<tr class="' + cls + '"><td title="' + info + '">' + info + '</td>';
+                    let p = '<tr><td title="' + info + '" class="' + activeClass(thisWeek, sumWeek) + '">' + info + '</td>';
 
                     for (let week = current; week > current - 5; week--) {
                         const d = week + '' in person.onDutyTime ? person.onDutyTime[week + ''] : null;
 
-                        if (moment().utc().day("Monday").isoWeek(week).unix() < validAfter) {
-                            p += '<td>N/A</td>';
+                        if (d === undefined || d === null) {
+                            p += '<td class="' + activeClass(d, sumWeek) + '">N/A</td>';
                         } else {
-                            p += '<td>' + formatSeconds(d) + '</td>';
+                            p += '<td class="' + activeClass(d, sumWeek) + '">' + formatSeconds(d) + '</td>';
                         }
                     }
 
@@ -46,12 +45,22 @@
         }
     });
 
+    function activeClass(thisWeek, sumWeek) {
+        if (thisWeek === undefined || thisWeek === null || thisWeek <= 0) {
+            return sumWeek <= 0 ? 'invalid' : 'inactive';
+        }
+
+        return thisWeek >= (4 * 60 * 60) ? 'active' : 'semi';
+    }
+
     function sum(hours) {
         let s = 0;
 
-        $.each(hours, function (key, h) {
-            s += h;
-        });
+        for (let week = current; week > current - 5; week--) {
+            const thisWeek = hours[week + ''];
+
+            s += thisWeek ? thisWeek : 0;
+        }
 
         return s;
     }
@@ -66,6 +75,10 @@
 
         let hours = Math.floor(minutes / 60);
         minutes -= hours * 60;
+
+        if (hours === 0 && minutes === 0) {
+            return seconds + ' seconds';
+        }
 
         let formatted = '';
 
@@ -89,11 +102,17 @@
     }
 
     function currentWeek() {
-        return moment().utc().isoWeek();
+        let difference = moment().utc().unix() - weekZero;
+
+        return Math.floor(difference / 604800);
     }
 
     function getDateRange(week) {
         week = parseInt(week);
+
+        const timestamp = (week * 604800) + weekZero;
+
+        const isoWeek = moment.unix(timestamp).utc().isoWeek();
 
         if (week === currentWeek()) {
             return "This week";
@@ -101,16 +120,23 @@
             return "Last week";
         }
 
-        return moment().utc().day("Monday").isoWeek(week).format('DD.MM.YYYY') + " - " + moment().utc().day("Sunday").isoWeek(week).format('DD.MM.YYYY');
+        return moment().utc().day("Monday").isoWeek(isoWeek).format('DD.MM.YYYY') + " - " + moment().utc().day("Sunday").isoWeek(isoWeek).format('DD.MM.YYYY');
+    }
+
+    function ensure(number) {
+        if (number === undefined || number === null) {
+            return -1;
+        }
+        return number;
     }
 
     function cmp(a, b) {
-        const thisA = a.onDutyTime[current + ''],
-            thisB = b.onDutyTime[current + ''];
+        const thisA = ensure(a.onDutyTime[current + '']),
+            thisB = ensure(b.onDutyTime[current + '']);
 
         if (thisA === thisB) {
-            const lastA = a.onDutyTime[(current - 1) + ''],
-                lastB = b.onDutyTime[(current - 1) + ''];
+            const lastA = ensure(a.onDutyTime[(current - 1) + '']),
+                lastB = ensure(b.onDutyTime[(current - 1) + '']);
 
             if (lastA === lastB) {
                 const sumA = sum(a.onDutyTime),

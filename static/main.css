@@ -70,24 +70,24 @@ td:first-child {
     text-align: justify;
 }
 
-tr.active {
+.active {
     background: #c5ffc5;
 }
 
-tr.semi {
+.semi {
     background: #ffeba4;
 }
 
-tr.inactive {
+.inactive {
     background: #ffc5c5;
 }
 
-tr.invalid {
+.invalid {
     background: #560000;
     color: #fff;
 }
 
-tr:hover {
+tr:hover td {
     background: #dfdfdf;
     color: #242729;
 }
