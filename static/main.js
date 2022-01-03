@@ -112,7 +112,7 @@
 
         const timestamp = (week * 604800) + weekZero;
 
-        const isoWeek = moment.unix(timestamp).utc().isoWeek();
+        const isoWeek = moment.unix(timestamp).utc();
 
         if (week === currentWeek()) {
             return "This week";
@@ -120,7 +120,7 @@
             return "Last week";
         }
 
-        return moment().utc().day("Monday").isoWeek(isoWeek).format('DD.MM.YYYY') + " - " + moment().utc().day("Sunday").isoWeek(isoWeek).format('DD.MM.YYYY');
+        return isoWeek.format('DD.MM.YYYY') + " - " + isoWeek.add(6, 'days').format('DD.MM.YYYY');
     }
 
     function ensure(number) {
