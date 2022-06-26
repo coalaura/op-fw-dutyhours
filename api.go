@@ -10,12 +10,10 @@ func api(c *gin.Context) {
 	server := _getServer(c)
 	typ := c.Param("type")
 
-	data, err := getOPFWData(server)
-	if err != nil || data.StatusCode != 200 {
+	data, err := getOPFWData(server, typ)
+	if err != nil {
 		if err != nil {
 			log.WarningE(err)
-		} else if data.Message != nil {
-			log.Warning(*data.Message)
 		}
 
 		c.AbortWithStatusJSON(500, map[string]interface{}{
@@ -28,12 +26,12 @@ func api(c *gin.Context) {
 	if typ == "police" {
 		c.JSON(200, map[string]interface{}{
 			"status": true,
-			"result": data.Data.Police,
+			"result": data,
 		})
 	} else if typ == "medical" {
 		c.JSON(200, map[string]interface{}{
 			"status": true,
-			"result": data.Data.Medical,
+			"result": data,
 		})
 	} else {
 		c.AbortWithStatusJSON(500, map[string]interface{}{
