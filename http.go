@@ -16,10 +16,10 @@ type DutyTimeResponse struct {
 }
 
 type DutyHourEntry struct {
-	Id        int64       `json:"character_id"`
-	FirstName string      `json:"first_name"`
-	LastName  string      `json:"last_name"`
-	DutyTime  interface{} `json:"on_duty_time"`
+	Id        int64                  `json:"character_id"`
+	FirstName string                 `json:"first_name"`
+	LastName  string                 `json:"last_name"`
+	DutyTime  map[string]interface{} `json:"on_duty_time"`
 }
 
 type DutyHourResult struct {
@@ -42,7 +42,7 @@ func getOPFWData(server, job string) ([]DutyHourResult, error) {
 
 	switch job {
 	case "police":
-		job = "Law%20Enforcement"
+		job = "Law Enforcement"
 	case "medical":
 		job = "Medical"
 	default:
@@ -82,7 +82,7 @@ func getOPFWData(server, job string) ([]DutyHourResult, error) {
 			Id:        entry.Id,
 			FirstName: entry.FirstName,
 			LastName:  entry.LastName,
-			DutyTime:  entry.DutyTime,
+			DutyTime:  entry.DutyTime[job],
 		}
 	}
 
