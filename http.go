@@ -16,10 +16,10 @@ type DutyTimeResponse struct {
 }
 
 type DutyHourEntry struct {
-	Id        int64                  `json:"character_id"`
-	FirstName string                 `json:"first_name"`
-	LastName  string                 `json:"last_name"`
-	DutyTime  map[string]interface{} `json:"on_duty_time"`
+	Id        int64       `json:"character_id"`
+	FirstName string      `json:"first_name"`
+	LastName  string      `json:"last_name"`
+	DutyTime  interface{} `json:"on_duty_time"`
 }
 
 type DutyHourResult struct {
@@ -76,13 +76,19 @@ func getOPFWData(server, job string) ([]DutyHourResult, error) {
 		return nil, errors.New("rest api responded with status false")
 	}
 
-	result := make([]DutyHourResult, len(duty.Data))
-	for i, entry := range duty.Data {
-		result[i] = DutyHourResult{
-			Id:        entry.Id,
-			FirstName: entry.FirstName,
-			LastName:  entry.LastName,
-			DutyTime:  entry.DutyTime[job],
+	result := make([]DutyHourResult, 0)
+	for _, entry := range duty.Data {
+		if entry.DutyTime != nil {
+			t, ok := entry.DutyTime.(map[string]interface{})
+
+			if ok && t != nil && t[job] != nil {
+				result = append(result, DutyHourResult{
+					Id:        entry.Id,
+					FirstName: entry.FirstName,
+					LastName:  entry.LastName,
+					DutyTime:  t[job],
+				})
+			}
 		}
 	}
 
