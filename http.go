@@ -73,7 +73,7 @@ func getOPFWData(server, job string) ([]DutyHourResult, error) {
 	}
 
 	if !duty.Status {
-		return nil, errors.New("rest api responded with status false")
+		return nil, errors.New("rest api responded with status false: " + string(b))
 	}
 
 	result := make([]DutyHourResult, 0)
