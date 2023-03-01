@@ -9,6 +9,14 @@
         weekZero = 1609113600,
         current = currentWeek();
 
+	function resolve(pTime) {
+		if (typeof pTime === 'object') {
+			return pTime.normal + pTime.undercover;
+		}
+
+		return pTime;
+	}
+
     $.get('/duty/' + server + '/' + type + '/api', function (data) {
         if (data.status) {
             if (data.result.length > 0) {
@@ -18,13 +26,13 @@
 
                 $.each(data.result, function (_, person) {
                     const info = person.firstName + ' ' + person.lastName + ' (#' + person.id + ')';
-                    const thisWeek = person.onDutyTime[current + ''];
+                    const thisWeek = resolve(person.onDutyTime[current + '']);
                     const sumWeek = sum(person.onDutyTime);
 
                     let p = '<tr><td title="' + info + '" class="' + activeClass(thisWeek, sumWeek) + '">' + info + '</td>';
 
                     for (let week = current; week > current - 5; week--) {
-                        const d = week + '' in person.onDutyTime ? person.onDutyTime[week + ''] : null;
+                        const d = week + '' in person.onDutyTime ? resolve(person.onDutyTime[week + '']) : null;
 
                         if (d === undefined || d === null) {
                             p += '<td class="' + activeClass(d, sumWeek) + '">N/A</td>';
@@ -57,7 +65,7 @@
         let s = 0;
 
         for (let week = current; week > current - 5; week--) {
-            const thisWeek = hours[week + ''];
+            const thisWeek = resolve(hours[week + '']);
 
             s += thisWeek ? thisWeek : 0;
         }
